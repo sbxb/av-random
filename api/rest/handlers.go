@@ -4,17 +4,18 @@ import (
 	"net/http"
 
 	"github.com/sbxb/av-random/config"
+	"github.com/sbxb/av-random/service/random"
 )
 
 type RouteHandler struct {
 	config config.HTTPServer
-	//rs     *random.Service
+	rs     *random.Service
 }
 
-func NewRouteHandler(cfg config.HTTPServer /*, rs *random.Service*/) RouteHandler {
+func NewRouteHandler(cfg config.HTTPServer, rs *random.Service) RouteHandler {
 	return RouteHandler{
 		config: cfg,
-		/*rs:     rs,*/
+		rs:     rs,
 	}
 }
 

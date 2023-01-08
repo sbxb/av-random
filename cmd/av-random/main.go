@@ -6,6 +6,7 @@ import (
 
 	"github.com/sbxb/av-random/api/rest"
 	"github.com/sbxb/av-random/config"
+	"github.com/sbxb/av-random/service/random"
 	"github.com/sbxb/av-random/storage/inmemory"
 )
 
@@ -22,10 +23,19 @@ func main() {
 
 	log.Printf("Config read: %+v", cfg)
 
-	storage, _ := inmemory.NewMemoryStorage()
-	_ = storage
+	storage, err := inmemory.NewMemoryStorage()
+	if err != nil {
+		log.Fatalf("cannot create storage: %v", err)
+	}
 
-	router := rest.NewRouter(cfg.HTTPServer /*, rs*/)
+	randomService, err := random.New(storage)
+	if err != nil {
+		log.Fatalf("cannot create Random.Service: %v", err)
+	}
+
+	log.Println("Random.Service created")
+
+	router := rest.NewRouter(cfg.HTTPServer, randomService)
 
 	server := rest.NewHTTPServer(cfg.HTTPServer, router)
 
