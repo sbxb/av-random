@@ -6,6 +6,7 @@ import (
 
 	"github.com/sbxb/av-random/api/rest"
 	"github.com/sbxb/av-random/config"
+	"github.com/sbxb/av-random/storage/inmemory"
 )
 
 func main() {
@@ -20,6 +21,9 @@ func main() {
 	}
 
 	log.Printf("Config read: %+v", cfg)
+
+	storage, _ := inmemory.NewMemoryStorage()
+	_ = storage
 
 	router := rest.NewRouter(cfg.HTTPServer /*, rs*/)
 
