@@ -5,6 +5,7 @@ import (
 	"log"
 	"net/http"
 
+	"github.com/go-chi/chi/v5"
 	"github.com/sbxb/av-random/config"
 	"github.com/sbxb/av-random/service/random"
 )
@@ -23,6 +24,7 @@ func NewRouteHandler(cfg config.HTTPServer, rs *random.Service) RouteHandler {
 
 // e.g. curl -i -X POST http://localhost:8080/api/generate
 func (rh RouteHandler) PostGenerate(w http.ResponseWriter, r *http.Request) {
+	// FIXME set content-type in middleware
 	log.Println("PostGenerate handler hit")
 
 	id, errID := rh.rs.GenerateID()
@@ -56,7 +58,28 @@ func (rh RouteHandler) PostGenerate(w http.ResponseWriter, r *http.Request) {
 	w.Write(rbytes)
 }
 
+// e.g. curl -i -X GET http://localhost:8080/api/retrieve/<id>
 func (rh RouteHandler) GetRetrieve(w http.ResponseWriter, r *http.Request) {
 	log.Println("GetRetrieve handler hit")
-	//
+
+	id := chi.URLParam(r, "id")
+	if id == "" {
+		http.Error(w, "no generation id provided", http.StatusBadRequest)
+		return
+	}
+
+	re, err := rh.rs.RetrieveRandomValue(id)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusNotFound)
+		return
+	}
+
+	rbytes, errJSON := json.Marshal(convRandomEntityToRetrieveResponse(re))
+	if errJSON != nil {
+		http.Error(w, errJSON.Error(), http.StatusInternalServerError)
+		return
+	}
+
+	w.WriteHeader(http.StatusOK)
+	w.Write(rbytes)
 }

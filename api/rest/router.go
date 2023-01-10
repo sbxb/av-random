@@ -15,7 +15,7 @@ func NewRouter(cfg config.HTTPServer, rs *random.Service) http.Handler {
 
 	router.Route(cfg.BaseURL, func(r chi.Router) {
 		r.Post("/generate", rh.PostGenerate)
-		r.Get("/retrieve", rh.GetRetrieve)
+		r.Get("/retrieve/{id}", rh.GetRetrieve)
 	})
 
 	// TODO health checking route
