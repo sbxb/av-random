@@ -25,7 +25,7 @@ func (s *MemoryStorageTestSuite) Test_01_MemoryStorage_GetNonexistentEntry() {
 	key := "nonexistent"
 	wantEmpty := true
 
-	entry := s.storage.GetEntryByID(key)
+	entry, _ := s.storage.GetEntryByID(key)
 	gotEmpty := entry.IsEmpty()
 
 	s.Equal(wantEmpty, gotEmpty)
@@ -41,7 +41,7 @@ func (s *MemoryStorageTestSuite) Test_02_MemoryStorage_AddThenGetEntry() {
 	err := s.storage.AddEntry(wantEntry)
 	s.NoError(err)
 
-	gotEntry := s.storage.GetEntryByID(key)
+	gotEntry, _ := s.storage.GetEntryByID(key)
 	s.Equal(wantEntry, gotEntry)
 }
 

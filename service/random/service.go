@@ -8,7 +8,7 @@ import (
 
 type Storage interface {
 	AddEntry(entry models.RandomEntity) error
-	GetEntryByID(id string) models.RandomEntity
+	GetEntryByID(id string) (models.RandomEntity, error)
 }
 
 type Service struct {
@@ -49,9 +49,12 @@ func (s *Service) SaveRandomValue(id string, value int64) error {
 }
 
 func (s *Service) RetrieveRandomValue(id string) (models.RandomEntity, error) {
-	re := s.storage.GetEntryByID(id)
+	re, err := s.storage.GetEntryByID(id)
+	if err != nil {
+		return re, fmt.Errorf("Random Service: cannot retrieve value with id %s due to internal error %w", id, err)
+	}
 	if re.IsEmpty() {
-		return re, fmt.Errorf("Random Service: cannot retrieve value with id %s", id)
+		return re, fmt.Errorf("Random Service: cannot find value with id %s", id)
 	}
 
 	return re, nil

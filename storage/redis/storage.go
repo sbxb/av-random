@@ -1,0 +1,66 @@
+package redis
+
+import (
+	"context"
+	"encoding/json"
+	"fmt"
+
+	r "github.com/go-redis/redis/v9"
+	"github.com/sbxb/av-random/models"
+)
+
+type RedisStorage struct {
+	client *r.Client
+}
+
+func NewRedisStorage() (*RedisStorage, error) {
+	// FIXME use proper config settings
+	cl := r.NewClient(&r.Options{
+		Addr:     "localhost:6379",
+		Password: "password",
+		DB:       0,
+	})
+
+	_, err := cl.Ping(context.Background()).Result()
+	if err != nil {
+		return nil, fmt.Errorf("Redis storage: can not connect to DB: %w", err)
+	}
+
+	return &RedisStorage{client: cl}, nil
+}
+
+// FIXME Errors should be of custom types (placed in storage/errors.go) !!!
+
+// FIXME add context to all types of storages and interface
+func (rs *RedisStorage) AddEntry(entry models.RandomEntity) error {
+	jEntry, err := json.Marshal(entry)
+	if err != nil {
+		return err
+	}
+
+	err = rs.client.Set(context.TODO(), entry.GenerationID, jEntry, 0).Err()
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func (rs *RedisStorage) GetEntryByID(id string) (models.RandomEntity, error) {
+	var res models.RandomEntity
+
+	str, err := rs.client.Get(context.TODO(), id).Result()
+	if err != nil {
+		if err == r.Nil {
+			return res, nil
+		}
+		return res, fmt.Errorf("Redis storage: can not extract entry: %w", err)
+	}
+
+	err = json.Unmarshal([]byte(str), &res)
+	if err != nil {
+		return res, fmt.Errorf("Redis storage: can not unmarshal extracted entry: %w", err)
+	}
+
+	return res, nil
+}

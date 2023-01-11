@@ -28,9 +28,9 @@ func (ms *MemoryStorage) AddEntry(entry models.RandomEntity) error {
 	return nil
 }
 
-func (ms *MemoryStorage) GetEntryByID(id string) models.RandomEntity {
+func (ms *MemoryStorage) GetEntryByID(id string) (models.RandomEntity, error) {
 	ms.Lock()
 	defer ms.Unlock()
 
-	return ms.data[id]
+	return ms.data[id], nil
 }
