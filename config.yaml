@@ -1,3 +1,8 @@
 http_server:
   base_url: '/api'
   port: ':8080'
+
+redis:
+  enabled: true
+  address: 'localhost:6379'
+  password: 'password'

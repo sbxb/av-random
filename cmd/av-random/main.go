@@ -7,7 +7,9 @@ import (
 	"github.com/sbxb/av-random/api/rest"
 	"github.com/sbxb/av-random/config"
 	"github.com/sbxb/av-random/service/random"
+	"github.com/sbxb/av-random/storage"
 	"github.com/sbxb/av-random/storage/inmemory"
+	"github.com/sbxb/av-random/storage/redis"
 )
 
 func main() {
@@ -23,7 +25,14 @@ func main() {
 
 	log.Printf("Config read: %+v", cfg)
 
-	storage, err := inmemory.NewMemoryStorage()
+	var storage storage.Storage
+
+	if cfg.Redis.Enabled {
+		storage, err = redis.NewRedisStorage(cfg.Redis)
+	} else {
+		storage, err = inmemory.NewMemoryStorage()
+	}
+
 	if err != nil {
 		log.Fatalf("cannot create storage: %v", err)
 	}

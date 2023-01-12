@@ -6,6 +6,7 @@ import (
 	"fmt"
 
 	r "github.com/go-redis/redis/v9"
+	"github.com/sbxb/av-random/config"
 	"github.com/sbxb/av-random/models"
 )
 
@@ -13,11 +14,10 @@ type RedisStorage struct {
 	client *r.Client
 }
 
-func NewRedisStorage() (*RedisStorage, error) {
-	// FIXME use proper config settings
+func NewRedisStorage(cfg config.Redis) (*RedisStorage, error) {
 	cl := r.NewClient(&r.Options{
-		Addr:     "localhost:6379",
-		Password: "password",
+		Addr:     cfg.Address,
+		Password: cfg.Password,
 		DB:       0,
 	})
 

@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/sbxb/av-random/config"
 	"github.com/sbxb/av-random/models"
 	"github.com/sbxb/av-random/storage/redis"
 	"github.com/stretchr/testify/require"
@@ -17,7 +18,10 @@ type RedisStorageTestSuite struct {
 
 func (s *RedisStorageTestSuite) SetupSuite() {
 	var err error
-	s.storage, err = redis.NewRedisStorage()
+	s.storage, err = redis.NewRedisStorage(config.Redis{
+		Address:  "localhost:6379",
+		Password: "password",
+	})
 	require.Nil(s.T(), err)
 }
 
