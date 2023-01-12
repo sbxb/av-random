@@ -18,7 +18,10 @@ func NewRouter(cfg config.HTTPServer, rs *random.Service) http.Handler {
 		r.Get("/retrieve/{id}", rh.GetRetrieve)
 	})
 
-	// TODO health checking route
+	router.Get("/healthz", func(w http.ResponseWriter, r *http.Request) {
+		w.WriteHeader(200)
+		w.Write([]byte("ok"))
+	})
 
 	return router
 }
