@@ -1,21 +1,18 @@
 package random
 
 import (
+	"context"
 	"fmt"
 
 	"github.com/sbxb/av-random/models"
+	"github.com/sbxb/av-random/storage"
 )
 
-type Storage interface {
-	AddEntry(entry models.RandomEntity) error
-	GetEntryByID(id string) (models.RandomEntity, error)
-}
-
 type Service struct {
-	storage Storage
+	storage storage.Storage
 }
 
-func New(storage Storage) (*Service, error) {
+func New(storage storage.Storage) (*Service, error) {
 	return &Service{
 		storage: storage,
 	}, nil
@@ -39,8 +36,8 @@ func (s *Service) GenerateRandomValue() (int64, error) {
 	return n, nil
 }
 
-func (s *Service) SaveRandomValue(id string, value int64) error {
-	err := s.storage.AddEntry(models.RandomEntity{GenerationID: id, RandomValue: value})
+func (s *Service) SaveRandomValue(ctx context.Context, id string, value int64) error {
+	err := s.storage.AddEntry(ctx, models.RandomEntity{GenerationID: id, RandomValue: value})
 	if err != nil {
 		return fmt.Errorf("Random Service: cannot save value with id %s", id)
 	}
@@ -48,8 +45,8 @@ func (s *Service) SaveRandomValue(id string, value int64) error {
 	return nil
 }
 
-func (s *Service) RetrieveRandomValue(id string) (models.RandomEntity, error) {
-	re, err := s.storage.GetEntryByID(id)
+func (s *Service) RetrieveRandomValue(ctx context.Context, id string) (models.RandomEntity, error) {
+	re, err := s.storage.GetEntryByID(ctx, id)
 	if err != nil {
 		return re, fmt.Errorf("Random Service: cannot retrieve value with id %s due to internal error %w", id, err)
 	}

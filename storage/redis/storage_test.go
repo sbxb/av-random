@@ -1,6 +1,7 @@
 package redis_test
 
 import (
+	"context"
 	"testing"
 
 	"github.com/sbxb/av-random/models"
@@ -28,7 +29,7 @@ func (s *RedisStorageTestSuite) Test_01_RedisStorage_GetNonexistentEntry() {
 	key := "nonexistent"
 	wantEmpty := true
 
-	entry, _ := s.storage.GetEntryByID(key)
+	entry, _ := s.storage.GetEntryByID(context.Background(), key)
 	gotEmpty := entry.IsEmpty()
 
 	s.Equal(wantEmpty, gotEmpty)
@@ -41,7 +42,7 @@ func (s *RedisStorageTestSuite) Test_02_RedisStorage_AddEntry() {
 		RandomValue:  555,
 	}
 
-	err := s.storage.AddEntry(wantEntry)
+	err := s.storage.AddEntry(context.Background(), wantEntry)
 	s.NoError(err)
 }
 
@@ -52,7 +53,7 @@ func (s *RedisStorageTestSuite) Test_03_RedisStorage_GetEntry() {
 		RandomValue:  555,
 	}
 
-	gotEntry, err := s.storage.GetEntryByID(key)
+	gotEntry, err := s.storage.GetEntryByID(context.Background(), key)
 	s.NoError(err)
 	s.Equal(wantEntry, gotEntry)
 }

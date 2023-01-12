@@ -1,6 +1,7 @@
 package inmemory
 
 import (
+	"context"
 	"sync"
 
 	"github.com/sbxb/av-random/models"
@@ -19,7 +20,7 @@ func NewMemoryStorage() (*MemoryStorage, error) {
 	return &MemoryStorage{data: data}, nil
 }
 
-func (ms *MemoryStorage) AddEntry(entry models.RandomEntity) error {
+func (ms *MemoryStorage) AddEntry(ctx context.Context, entry models.RandomEntity) error {
 	ms.Lock()
 	defer ms.Unlock()
 
@@ -28,7 +29,7 @@ func (ms *MemoryStorage) AddEntry(entry models.RandomEntity) error {
 	return nil
 }
 
-func (ms *MemoryStorage) GetEntryByID(id string) (models.RandomEntity, error) {
+func (ms *MemoryStorage) GetEntryByID(ctx context.Context, id string) (models.RandomEntity, error) {
 	ms.Lock()
 	defer ms.Unlock()
 

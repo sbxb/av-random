@@ -1,6 +1,7 @@
 package inmemory_test
 
 import (
+	"context"
 	"testing"
 
 	"github.com/sbxb/av-random/models"
@@ -25,7 +26,7 @@ func (s *MemoryStorageTestSuite) Test_01_MemoryStorage_GetNonexistentEntry() {
 	key := "nonexistent"
 	wantEmpty := true
 
-	entry, _ := s.storage.GetEntryByID(key)
+	entry, _ := s.storage.GetEntryByID(context.Background(), key)
 	gotEmpty := entry.IsEmpty()
 
 	s.Equal(wantEmpty, gotEmpty)
@@ -37,11 +38,12 @@ func (s *MemoryStorageTestSuite) Test_02_MemoryStorage_AddThenGetEntry() {
 		GenerationID: key,
 		RandomValue:  555,
 	}
+	ctx := context.Background()
 
-	err := s.storage.AddEntry(wantEntry)
+	err := s.storage.AddEntry(ctx, wantEntry)
 	s.NoError(err)
 
-	gotEntry, _ := s.storage.GetEntryByID(key)
+	gotEntry, _ := s.storage.GetEntryByID(ctx, key)
 	s.Equal(wantEntry, gotEntry)
 }
 

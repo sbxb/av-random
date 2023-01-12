@@ -39,7 +39,7 @@ func (rh RouteHandler) PostGenerate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	err := rh.rs.SaveRandomValue(id, value)
+	err := rh.rs.SaveRandomValue(r.Context(), id, value)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
@@ -68,7 +68,7 @@ func (rh RouteHandler) GetRetrieve(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	re, err := rh.rs.RetrieveRandomValue(id)
+	re, err := rh.rs.RetrieveRandomValue(r.Context(), id)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusNotFound)
 		return

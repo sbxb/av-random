@@ -31,14 +31,13 @@ func NewRedisStorage() (*RedisStorage, error) {
 
 // FIXME Errors should be of custom types (placed in storage/errors.go) !!!
 
-// FIXME add context to all types of storages and interface
-func (rs *RedisStorage) AddEntry(entry models.RandomEntity) error {
+func (rs *RedisStorage) AddEntry(ctx context.Context, entry models.RandomEntity) error {
 	jEntry, err := json.Marshal(entry)
 	if err != nil {
 		return err
 	}
 
-	err = rs.client.Set(context.TODO(), entry.GenerationID, jEntry, 0).Err()
+	err = rs.client.Set(ctx, entry.GenerationID, jEntry, 0).Err()
 	if err != nil {
 		return err
 	}
@@ -46,10 +45,10 @@ func (rs *RedisStorage) AddEntry(entry models.RandomEntity) error {
 	return nil
 }
 
-func (rs *RedisStorage) GetEntryByID(id string) (models.RandomEntity, error) {
+func (rs *RedisStorage) GetEntryByID(ctx context.Context, id string) (models.RandomEntity, error) {
 	var res models.RandomEntity
 
-	str, err := rs.client.Get(context.TODO(), id).Result()
+	str, err := rs.client.Get(ctx, id).Result()
 	if err != nil {
 		if err == r.Nil {
 			return res, nil

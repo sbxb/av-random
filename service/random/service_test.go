@@ -1,6 +1,7 @@
 package random_test
 
 import (
+	"context"
 	"testing"
 
 	"github.com/sbxb/av-random/service/random"
@@ -28,7 +29,7 @@ func (s *RandomServiceTestSuite) Test_01_RandomService_SaveRandomValue() {
 	id := "someid"
 	value := int64(555)
 
-	err := s.service.SaveRandomValue(id, value)
+	err := s.service.SaveRandomValue(context.Background(), id, value)
 	s.NoError(err)
 }
 
@@ -36,7 +37,7 @@ func (s *RandomServiceTestSuite) Test_02_RandomService_RetrieveRandomValue() {
 	id := "someid"
 	wantValue := int64(555)
 
-	got, err := s.service.RetrieveRandomValue(id)
+	got, err := s.service.RetrieveRandomValue(context.Background(), id)
 	s.NoError(err)
 
 	s.Equal(wantValue, got.RandomValue)
