@@ -6,6 +6,7 @@ import (
 
 	"github.com/sbxb/av-random/config"
 	"github.com/sbxb/av-random/models"
+	"github.com/sbxb/av-random/storage"
 	"github.com/sbxb/av-random/storage/redis"
 	"github.com/stretchr/testify/require"
 	"github.com/stretchr/testify/suite"
@@ -33,9 +34,11 @@ func (s *RedisStorageTestSuite) Test_01_RedisStorage_GetNonexistentEntry() {
 	key := "nonexistent"
 	wantEmpty := true
 
-	entry, _ := s.storage.GetEntryByID(context.Background(), key)
-	gotEmpty := entry.IsEmpty()
+	entry, err := s.storage.GetEntryByID(context.Background(), key)
 
+	s.ErrorIs(err, storage.ErrEntryNotFound)
+
+	gotEmpty := entry.IsEmpty()
 	s.Equal(wantEmpty, gotEmpty)
 }
 

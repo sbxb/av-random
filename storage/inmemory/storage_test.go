@@ -43,7 +43,9 @@ func (s *MemoryStorageTestSuite) Test_02_MemoryStorage_AddThenGetEntry() {
 	err := s.storage.AddEntry(ctx, wantEntry)
 	s.NoError(err)
 
-	gotEntry, _ := s.storage.GetEntryByID(ctx, key)
+	gotEntry, err := s.storage.GetEntryByID(ctx, key)
+	s.NoError(err)
+
 	s.Equal(wantEntry, gotEntry)
 }
 
