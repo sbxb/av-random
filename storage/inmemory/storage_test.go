@@ -5,6 +5,7 @@ import (
 	"testing"
 
 	"github.com/sbxb/av-random/models"
+	"github.com/sbxb/av-random/storage"
 	"github.com/sbxb/av-random/storage/inmemory"
 	"github.com/stretchr/testify/suite"
 )
@@ -24,19 +25,18 @@ func (s *MemoryStorageTestSuite) TearDownSuite() {
 
 func (s *MemoryStorageTestSuite) Test_01_MemoryStorage_GetNonexistentEntry() {
 	key := "nonexistent"
-	wantEmpty := true
 
-	entry, _ := s.storage.GetEntryByID(context.Background(), key)
-	gotEmpty := entry.IsEmpty()
+	_, err := s.storage.GetEntryByID(context.Background(), key)
 
-	s.Equal(wantEmpty, gotEmpty)
+	s.ErrorIs(err, storage.ErrEntryNotFound)
 }
 
 func (s *MemoryStorageTestSuite) Test_02_MemoryStorage_AddThenGetEntry() {
 	key := "some_key"
 	wantEntry := models.RandomEntity{
-		GenerationID: key,
-		RandomValue:  555,
+		GenerationID:    key,
+		RandomValue:     "555",
+		RandomValueType: "dec",
 	}
 	ctx := context.Background()
 

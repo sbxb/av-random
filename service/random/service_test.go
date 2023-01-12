@@ -4,6 +4,7 @@ import (
 	"context"
 	"testing"
 
+	"github.com/sbxb/av-random/models"
 	"github.com/sbxb/av-random/service/random"
 	"github.com/sbxb/av-random/storage/inmemory"
 	"github.com/stretchr/testify/suite"
@@ -27,15 +28,18 @@ func (s *RandomServiceTestSuite) TearDownSuite() {
 
 func (s *RandomServiceTestSuite) Test_01_RandomService_SaveRandomValue() {
 	id := "someid"
-	value := int64(555)
+	value := "555"
+	valueType := "dec"
 
-	err := s.service.SaveRandomValue(context.Background(), id, value)
+	err := s.service.SaveRandomValue(context.Background(),
+		models.RandomEntity{GenerationID: id, RandomValue: value, RandomValueType: valueType},
+	)
 	s.NoError(err)
 }
 
 func (s *RandomServiceTestSuite) Test_02_RandomService_RetrieveRandomValue() {
 	id := "someid"
-	wantValue := int64(555)
+	wantValue := "555"
 
 	got, err := s.service.RetrieveRandomValue(context.Background(), id)
 	s.NoError(err)

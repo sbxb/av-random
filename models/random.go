@@ -1,10 +1,9 @@
 package models
 
-type RandomEntity struct {
-	GenerationID string
-	RandomValue  int64 // TODO Let us use a simple built-in type for now
-}
+var RandomValueTypes = []string{"dec", "hex", "str", "stralnum", "uuid"}
 
-func (re RandomEntity) IsEmpty() bool {
-	return re.GenerationID == "" && re.RandomValue == 0
+type RandomEntity struct {
+	GenerationID    string
+	RandomValue     string
+	RandomValueType string
 }

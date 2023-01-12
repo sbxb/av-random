@@ -7,6 +7,7 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	"github.com/sbxb/av-random/config"
+	"github.com/sbxb/av-random/models"
 	"github.com/sbxb/av-random/service/random"
 )
 
@@ -27,25 +28,39 @@ func (rh RouteHandler) PostGenerate(w http.ResponseWriter, r *http.Request) {
 	// FIXME set content-type in middleware
 	log.Println("PostGenerate handler hit")
 
+	req, err := parsePostGenerateBody(r.Body)
+	if err != nil {
+		http.Error(w, err.Error(), http.StatusBadRequest)
+		return
+	}
+
+	_ = req
+
 	id, errID := rh.rs.GenerateID()
 	if errID != nil {
 		http.Error(w, errID.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	value, errValue := rh.rs.GenerateRandomValue()
+	value, errValue := rh.rs.GenerateRandomValue(req.Type, req.Length)
 	if errValue != nil {
 		http.Error(w, errValue.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	err := rh.rs.SaveRandomValue(r.Context(), id, value)
+	re := models.RandomEntity{
+		GenerationID:    id,
+		RandomValue:     value,
+		RandomValueType: req.Type,
+	}
+
+	err = rh.rs.SaveRandomValue(r.Context(), re)
 	if err != nil {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		return
 	}
 
-	log.Printf("id = %s; value = %d\n", id, value)
+	log.Printf("id = %s; value = %s\n", id, value)
 
 	response := GenerateResponse{ID: id}
 	rbytes, errJSON := json.Marshal(response)

@@ -32,21 +32,18 @@ func (s *RedisStorageTestSuite) TearDownSuite() {
 
 func (s *RedisStorageTestSuite) Test_01_RedisStorage_GetNonexistentEntry() {
 	key := "nonexistent"
-	wantEmpty := true
 
-	entry, err := s.storage.GetEntryByID(context.Background(), key)
+	_, err := s.storage.GetEntryByID(context.Background(), key)
 
 	s.ErrorIs(err, storage.ErrEntryNotFound)
-
-	gotEmpty := entry.IsEmpty()
-	s.Equal(wantEmpty, gotEmpty)
 }
 
 func (s *RedisStorageTestSuite) Test_02_RedisStorage_AddEntry() {
 	key := "some_key"
 	wantEntry := models.RandomEntity{
-		GenerationID: key,
-		RandomValue:  555,
+		GenerationID:    key,
+		RandomValue:     "555",
+		RandomValueType: "dec",
 	}
 
 	err := s.storage.AddEntry(context.Background(), wantEntry)
@@ -56,8 +53,9 @@ func (s *RedisStorageTestSuite) Test_02_RedisStorage_AddEntry() {
 func (s *RedisStorageTestSuite) Test_03_RedisStorage_GetEntry() {
 	key := "some_key"
 	wantEntry := models.RandomEntity{
-		GenerationID: key,
-		RandomValue:  555,
+		GenerationID:    key,
+		RandomValue:     "555",
+		RandomValueType: "dec",
 	}
 
 	gotEntry, err := s.storage.GetEntryByID(context.Background(), key)

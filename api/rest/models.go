@@ -2,8 +2,10 @@ package rest
 
 import "github.com/sbxb/av-random/models"
 
-// type GenerateRequest struct {
-// }
+type GenerateRequest struct {
+	Type   string `json:"type"`
+	Length int    `json:"length"`
+}
 
 type GenerateResponse struct {
 	ID string `json:"generation_id"`
@@ -14,7 +16,7 @@ type GenerateResponse struct {
 
 type RetrieveResponse struct {
 	ID           string `json:"generation_id"`
-	RandomNumber int64  `json:"random_number"`
+	RandomNumber string `json:"random_number"`
 }
 
 func convRandomEntityToRetrieveResponse(re models.RandomEntity) RetrieveResponse {
@@ -22,4 +24,16 @@ func convRandomEntityToRetrieveResponse(re models.RandomEntity) RetrieveResponse
 		ID:           re.GenerationID,
 		RandomNumber: re.RandomValue,
 	}
+}
+
+func (gr GenerateRequest) validate() bool {
+	isTypeValid := false
+	for _, t := range models.RandomValueTypes {
+		if gr.Type == t {
+			isTypeValid = true
+			break
+		}
+	}
+
+	return isTypeValid && gr.Length > 0
 }
