@@ -23,7 +23,7 @@ func NewRouteHandler(cfg config.HTTPServer, rs *random.Service) RouteHandler {
 	}
 }
 
-// e.g. curl -i -X POST http://localhost:8080/api/generate
+// e.g. curl -i -X POST http://localhost:8080/api/generate -d '{"type": "dec", "length": 8}'
 func (rh RouteHandler) PostGenerate(w http.ResponseWriter, r *http.Request) {
 	// FIXME set content-type in middleware
 	log.Println("PostGenerate handler hit")
@@ -71,7 +71,7 @@ func (rh RouteHandler) PostGenerate(w http.ResponseWriter, r *http.Request) {
 	w.Write(rbytes)
 }
 
-// e.g. curl -i -X GET http://localhost:8080/api/retrieve/<id>
+// e.g. curl -i -X GET http://localhost:8080/api/retrieve/2KPnOnfxdEpPOcMhJCxJoJdqTdE
 func (rh RouteHandler) GetRetrieve(w http.ResponseWriter, r *http.Request) {
 	log.Println("GetRetrieve handler hit")
 

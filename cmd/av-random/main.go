@@ -9,6 +9,7 @@ import (
 	"github.com/sbxb/av-random/service/random"
 	"github.com/sbxb/av-random/storage"
 	"github.com/sbxb/av-random/storage/inmemory"
+	"github.com/sbxb/av-random/storage/mongodb"
 	"github.com/sbxb/av-random/storage/redis"
 )
 
@@ -27,7 +28,9 @@ func main() {
 
 	var storage storage.Storage
 
-	if cfg.Redis.Enabled {
+	if cfg.MongoDB.Enabled {
+		storage, err = mongodb.NewMongoStorage(cfg.MongoDB)
+	} else if cfg.Redis.Enabled {
 		storage, err = redis.NewRedisStorage(cfg.Redis)
 	} else {
 		storage, err = inmemory.NewMemoryStorage()

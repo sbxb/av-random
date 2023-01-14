@@ -3,6 +3,13 @@ http_server:
   port: ':8080'
 
 redis:
-  enabled: true
+  enabled: false
   address: 'localhost:6379'
   password: 'password'
+
+mongodb:
+  enabled: true
+  address: 'localhost:27017'
+  user: 'randuser'
+  password: 'randpass'
+  dbname: 'avrandom'
