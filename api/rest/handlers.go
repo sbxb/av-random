@@ -34,8 +34,6 @@ func (rh RouteHandler) PostGenerate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	_ = req
-
 	id, errID := rh.rs.GenerateID()
 	if errID != nil {
 		http.Error(w, errID.Error(), http.StatusInternalServerError)

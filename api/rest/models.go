@@ -15,14 +15,16 @@ type GenerateResponse struct {
 // }
 
 type RetrieveResponse struct {
-	ID           string `json:"generation_id"`
-	RandomNumber string `json:"random_number"`
+	ID              string `json:"generation_id"`
+	RandomValue     string `json:"random_value"`
+	RandomValueType string `json:"random_value_type"`
 }
 
 func convRandomEntityToRetrieveResponse(re models.RandomEntity) RetrieveResponse {
 	return RetrieveResponse{
-		ID:           re.GenerationID,
-		RandomNumber: re.RandomValue,
+		ID:              re.GenerationID,
+		RandomValue:     re.RandomValue,
+		RandomValueType: re.RandomValueType,
 	}
 }
 
